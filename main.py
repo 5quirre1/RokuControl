@@ -575,7 +575,7 @@ class RokuGUI:
             self.history.add_item("Launch App", "Failed", "Not connected to any Roku device")
             self.refresh_history()
             return
-            
+        
         if app_name is None:
             for id, name in self.roku.app_list:
                 if id == app_id:
@@ -583,13 +583,15 @@ class RokuGUI:
                     break
             if app_name is None:
                 app_name = f"App ID {app_id}"
-                
+            
+        self.status_var.set(f"Launching {app_name}...")
         self.history.add_item("Launch App", "Started", f"Launching {app_name} (ID: {app_id})")
         self.refresh_history()
-            
+        
         def launch_thread():
             try:
-                if self.roku.launch_app(app_id):
+                result = self.roku.launch_app(app_id)
+                if result:
                     self.root.after(0, lambda: self.status_var.set(f"Launched {app_name}"))
                     self.root.after(0, lambda: self.history.add_item("Launch App", "Success", f"Launched {app_name} (ID: {app_id})"))
                 else:
@@ -600,7 +602,7 @@ class RokuGUI:
                 self.root.after(0, lambda: self.history.add_item("Launch App", "Error", str(e)))
             finally:
                 self.root.after(0, self.refresh_history)
-                
+            
         threading.Thread(target=launch_thread, daemon=True).start()
         
     def send_key(self, key):
