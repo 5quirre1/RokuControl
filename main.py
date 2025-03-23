@@ -260,7 +260,7 @@ class RokuGUI:
         self.root = root
         self.root.title("ROKU CONTROL !!!!")
         self.root.geometry("800x600")
-        self.root.minsize(700, 500)
+        self.root.minsize(1200, 700)
         
         self.roku = None
         self.history = CommandHistory()
